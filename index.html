@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Picasa iScroll</title>
+
+<script type="text/javascript" src="cordova-2.2.0.js"></script>
+<script type="text/javascript" src="iscroll.js"></script>
+
+<script type="text/javascript">
+
+//document.addEventListener('DOMContentLoaded', loaded, false);
+</script>
+
+<style type="text/css" media="all">
+body,ul,li {
+	padding:0;
+	margin:0;
+	border:0;
+color:white;
+background:#000;
+	-webkit-user-select:none;
+    -webkit-text-size-adjust:none;
+
+}
+
+#header {
+	position:absolute;
+	top:0; left:0;
+	width:100%;
+	height:45px;
+	line-height:45px;
+	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #fe96c9), color-stop(0.05, #d51875), color-stop(1, #7b0a2e));
+	background-image:-moz-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
+	background-image:-o-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
+	padding:0;
+	color:#eee;
+	font-size:20px;
+	text-align:center;
+}
+
+#header a {
+	color:#f3f3f3;
+	text-decoration:none;
+	font-weight:bold;
+	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
+}
+
+#wrapper {
+	position:absolute; z-index:1;
+	top:45px; bottom:0; left:0;
+	width:100%;
+	overflow:auto;
+
+}
+
+#scroller {
+	width:800px;
+	float:left;
+	padding:0;
+}
+
+#scroller ul {
+	list-style:none;
+	display:block;
+	float:left;
+	width:100%;
+	height:100%;
+	padding:0;
+	margin:0;
+/*	border:1px solid #aaa;*/
+}
+
+#scroller li {
+	display:block; float:left;
+	width:133.3333px; 
+	height:133.3333px; 
+	background:#000;
+}
+
+#scroller li div {
+	width:120px;
+	height:120px;
+	margin:6px;
+	/*border:1px solid #ddd;*/
+	background:#fff;
+}
+
+
+</style>
+<script>
+var $=function (id) {
+	var prefix=id[0];
+	var iid=id.slice(1,id.length);
+	switch (prefix){
+		case '#':	return document.getElementById(iid);   			break;
+		case '.':	return document.getElementsByClassName(iid);  	break;
+		default:	return document.getElementsByTagName(id); 
+		}	
+	}
+	
+picasa = function(user,album){
+
+	if (album){
+		//document.getElementById('albums').style.display='none';
+		//var imgmax=get_with_geometry().w;
+		var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '/albumid/' + album + '?alt=jsonc&hl=en_US&callback=viewPhotosList&thumbsize=' + icon_photos+'&imgmax='+imgmax;
+	} else {
+		//document.getElementById('albums').style.display='block';
+		var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '?category=album&alt=jsonc&callback=viewAlbumsList&access=public&thumbsize=' + icon_albums;
+	}
+	var script=document.createElement('SCRIPT');
+	script.type='text/javascript';
+	script.src=urlPICASA;
+	document.getElementsByTagName('head')[0].appendChild(script);
+	//rysujStrzalki();
+	
+}	
+	
+	
+var myScroll;
+
+function loaded() {
+	myScroll = new iScroll('wrapper', {
+		snap: 'li',
+		momentum: false,
+		hScrollbar: false,
+		vScrollbar: false
+	 });
+}
+	
+	imgmax = '800';
+	var user='szczecinmojemiasto';
+	var icon_albums	= '120c';
+	var icon_photos	= '120c';
+
+	
+function onload(){
+	var ul=$('#thelist');
+	ul.innerHTML='';
+	
+picasa(user);	
+	/*
+	for (var i=0; i<3; i++){
+		var li=document.createElement("LI");
+		li.innerHTML='<div>wpis '+i+'</div>';
+		ul.appendChild(li);
+	}
+	*/
+}
+
+
+function viewAlbumsList(req){
+ var ul=$('#thelist');
+ var ile=req.data.items.length;
+		for (var i=0;i<ile;i++){
+			var	html='';	
+			var self_link=req.data.items[i].selfLink;			
+			var alt_link=req.data.items[i].alternateLink;
+			var arr=self_link.split('/');
+			var arr=arr[arr.length-1].split('?');
+			var albumID=arr[0];			
+			var onklik='pokazAlbum(\''+self_link+'\');';
+			//html+='<a href=./?picasa='+picasa+'&album='+albumID+'>';
+				html+='<div onClick="'+onklik+'" class="ikony_galeria">';
+				html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
+				html+='</div>';
+			//html+='</a>';
+		var li=document.createElement("LI");
+		li.innerHTML=html;
+		ul.appendChild(li);
+		}
+		//$('#thelist').innerHTML=html;
+		//document.getElementById('albums').innerHTML+=html;
+		//pokazAlbum(req.data.items[0].selfLink);
+		loaded();
+}	
+
+
+function pokazAlbum(url_ALBUM){
+return false;
+	//var imgmax=get_with_geometry().w;
+	url_ALBUM=url_ALBUM.replace('entry','feed');
+	var scriptA=document.createElement('SCRIPT');
+	scriptA.type='text/javascript';
+	var aplus='&callback=viewPhotosList&thumbsize='+icon_photos+'&imgmax='+imgmax;
+	scriptA.src=url_ALBUM+aplus;
+	document.getElementsByTagName('head')[0].appendChild(scriptA);
+}
+
+
+</script>
+
+</head>
+<body onLoad="onload()">
+<div id="header"><a href="http://cubiq.org/iscroll">Picasa iScroll</a></div>
+
+<div id="wrapper">
+	<div id="scroller">
+		<ul id="thelist">
+
+		</ul>
+	</div>
+</div>
+
+</body>
+</html>
