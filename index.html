@@ -89,12 +89,11 @@ background:#000000;
 .btn {margin:2px;}
 .klik {cursor:pointer;}
 
-
-#photo {z-index:3; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#555; }
-#ramka {z-index:4; opacity:1; display:none; text-align:center;background:#fff;}
-#ramka img {z-index:6; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
-
-
+#overlay {z-index:3; opacity:0.5; display:none; position:absolute; width:100%; height:100%; background:gray;}
+#photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
+#ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
+#ramka img {z-index:20; opacity:1; text-align:center; max-width:100%;cursor:pointer; border:1px solid white;}
+#slajd {display:inline;z-index:10; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
 
 
 </style>
@@ -112,6 +111,13 @@ background:#000000;
 
 
 <script>
+var menuOpen=false;
+	imgmax = '800';
+	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
+	var icon_albums	= '120c';
+	var icon_photos	= '120c';
+
+
 var $=function (id) {
 	var prefix=id[0];
 	var iid=id.slice(1,id.length);
@@ -122,6 +128,32 @@ var $=function (id) {
 		}	
 	}
 	
+
+function onload(){
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+		try {if (device.uuid) {document.getElementById('infotest').innerHTML=device.platform+'<br />'+device.uuid;}	}
+		catch(err) {onDeviceReady();}
+
+	var ul=$('#thelist');
+	ul.innerHTML='';
+	picasa.show(user);	
+}
+
+    function onDeviceReady() {
+		//document.addEventListener("resume", onResume, false);
+		//document.addEventListener("pause", onPause, false);
+		//document.addEventListener("online", onOnline, false);
+		//document.addEventListener("offline", onOffline, false);
+		//document.addEventListener("backbutton", onBackKeyDown, false);
+		document.addEventListener("menubutton", onMenuKeyDown, false);		
+		$('#title').innerText=user;
+	}
+
+	function onMenuKeyDown() {
+		if (menuOpen) {$("#menu").style.display="none";menuOpen=false;}
+		else          {$("#menu").style.display="block";menuOpen=true;}	
+    }	
 	
 	
 picasa = {
@@ -156,19 +188,8 @@ function loaded() {
 	 });
 }
 	
-	imgmax = '800';
-	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
-	var icon_albums	= '120c';
-	var icon_photos	= '120c';
 
 	
-function onload(){
-	var ul=$('#thelist');
-	ul.innerHTML='';
-	
-picasa.show(user);	
-
-}
 
 
 function viewAlbumsList(req){
@@ -264,9 +285,11 @@ function pokazSlide(url,width,height,title,id,i){
 	//document.getElementById('photo').style.width =img_width+'px';
 	//document.getElementById('photo').style.height=img_height+'px';
 	//document.getElementById('ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" width="'+img_width+'" height="'+img_height+'" title="'+title+'" alt="'+title+'"/>';
-	$('#ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" />';
+	$('#ramka').innerHTML='<div id="slajd"><img class="photo" src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" /></div>';
 	$('#photo').style.display='block';
 	$('#ramka').style.display='block';
+	$('#overlay').style.display='block';
+	
 	/*
 	var j=i+1;
 	if (j>ostatni) j=0;
@@ -289,19 +312,37 @@ function usun(ten,id){
 	ramka.removeChild(slajd);
 	$('#photo').style.display='none';
 	$('#ramka').style.display='none';
+	$('#overlay').style.display='none';
+	
 
 }
 
-function menu(){
+function backToAlbumsList(){
 	$('#wrapper').style.display='none';
 	$('#albumy').style.display='block';
 	$('#thelist').innerHTML='';
 }
+
+
+function zapiszUser(user){
+	
+	//var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
+	window.localStorage.setItem('_picasa_user',user);
+	window.location.reload();
+}
+
+function dodajUser(){
+	alert('dodaj');
+	//var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
+	//window.localStorage.setItem('_picasa_user',user);
+	//window.location.reload();
+}
+
 </script>
 
 </head>
 <body onLoad="onload()">
-<div id="header"><a href="javascript:void(0)" onClick="menu()" >Picasa iScroll</a></div>
+<div id="header"><a href="javascript:void(0)" onClick="backToAlbumsList()" ><span id="title">Picasa iScroll</span></a></div>
 
 <div id="albumy"></div>
 
@@ -311,9 +352,23 @@ function menu(){
 	</div>
 </div>
 
+
+<div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; z-index:2; opacity:0.8; z-index:10;"> 
+	<button onClick="backToAlbumsList();" class="btn btn-inverse">Lista</button>
+	<button onClick="zapiszUser('zszczech');" class="btn btn-primary">Szczęch</button>
+	<button onClick="zapiszUser('znakzorro');" class="btn btn-primary">ZnakZorro</button>
+	<button onClick="zapiszUser('szczecinmojemiasto');" class="btn btn-info">Szczecin</button>
+	<button onClick="zapiszUser('szczecin.majowe');" class="btn btn-info">Majowe</button>
+	<button onClick="zapiszUser('galeria111');" class="btn btn-warning">Galeria111</button>
+	<button onClick="zapiszUser('galeria111.111');" class="btn btn-warning">Galeria111.111</button>
+	<button onClick="zapiszUser('widziensko');" class="btn btn-success">Widzieńsko</button>
+	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
+</div>
+
+<div id="overlay"></div>
 <div id="photo">
 <div id="ramka"></div>
 </div>
-
+<button onClick="onMenuKeyDown()" class="btn btn-inverse" style="position:absolute; left:2px; top:5px; z-index:11;">Menu</button>
 </body>
 </html>
