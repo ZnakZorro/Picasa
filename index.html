@@ -7,21 +7,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Picasa iScroll</title>
 
-<script type="text/javascript" src="cordova-2.2.0.js"></script>
-<script type="text/javascript" src="iscroll.js"></script>
-
-<script type="text/javascript">
-
-//document.addEventListener('DOMContentLoaded', loaded, false);
-</script>
-
+<link rel="stylesheet" href="bootstrap.mi.css">
 <style type="text/css" media="all">
 body,ul,li {
 	padding:0;
 	margin:0;
 	border:0;
 color:white;
-background:#000;
+background:#000000;
 	-webkit-user-select:none;
     -webkit-text-size-adjust:none;
 
@@ -64,6 +57,7 @@ background:#000;
 }
 
 #scroller ul {
+	z-index:2;
 	list-style:none;
 	display:block;
 	float:left;
@@ -75,10 +69,11 @@ background:#000;
 }
 
 #scroller li {
+	
 	display:block; float:left;
 	width:133.3333px; 
 	height:133.3333px; 
-	background:#000;
+	background:#444444;
 }
 
 #scroller li div {
@@ -87,10 +82,35 @@ background:#000;
 	margin:6px;
 	/*border:1px solid #ddd;*/
 	background:#fff;
+	cursor:pointer;
 }
+
+#albumy {margin-top:45px;}
+.btn {margin:2px;}
+.klik {cursor:pointer;}
+
+
+#photo {z-index:3; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#555; }
+#ramka {z-index:4; opacity:1; display:none; text-align:center;background:#fff;}
+#ramka img {z-index:6; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
+
+
 
 
 </style>
+
+
+
+<script type="text/javascript" src="cordova-2.2.0.js"></script>
+<script type="text/javascript" src="iscroll.js"></script>
+
+<script type="text/javascript">
+
+//document.addEventListener('DOMContentLoaded', loaded, false);
+</script>
+
+
+
 <script>
 var $=function (id) {
 	var prefix=id[0];
@@ -102,24 +122,28 @@ var $=function (id) {
 		}	
 	}
 	
-picasa = function(user,album){
+	
+	
+picasa = {
+	show: function(user,album){
 
-	if (album){
-		//document.getElementById('albums').style.display='none';
-		//var imgmax=get_with_geometry().w;
-		var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '/albumid/' + album + '?alt=jsonc&hl=en_US&callback=viewPhotosList&thumbsize=' + icon_photos+'&imgmax='+imgmax;
-	} else {
-		//document.getElementById('albums').style.display='block';
-		var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '?category=album&alt=jsonc&callback=viewAlbumsList&access=public&thumbsize=' + icon_albums;
-	}
-	var script=document.createElement('SCRIPT');
-	script.type='text/javascript';
-	script.src=urlPICASA;
-	document.getElementsByTagName('head')[0].appendChild(script);
-	//rysujStrzalki();
-	
+		if (album){
+			//document.getElementById('albums').style.display='none';
+			//var imgmax=get_with_geometry().w;
+			var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '/albumid/' + album + '?alt=jsonc&hl=en_US&callback=viewPhotosList&thumbsize=' + icon_photos+'&imgmax='+imgmax;
+		} else {
+			//document.getElementById('albums').style.display='block';
+			var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '?category=album&alt=jsonc&callback=viewAlbumsList&access=public&thumbsize=' + icon_albums;
+		}
+	//console.log(urlPICASA);	
+		var script=document.createElement('SCRIPT');
+		script.type='text/javascript';
+		script.src=urlPICASA;
+		document.getElementsByTagName('head')[0].appendChild(script);
+		//rysujStrzalki();
+		
+	}	
 }	
-	
 	
 var myScroll;
 
@@ -133,7 +157,7 @@ function loaded() {
 }
 	
 	imgmax = '800';
-	var user='szczecinmojemiasto';
+	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
 	var icon_albums	= '120c';
 	var icon_photos	= '120c';
 
@@ -142,22 +166,19 @@ function onload(){
 	var ul=$('#thelist');
 	ul.innerHTML='';
 	
-picasa(user);	
-	/*
-	for (var i=0; i<3; i++){
-		var li=document.createElement("LI");
-		li.innerHTML='<div>wpis '+i+'</div>';
-		ul.appendChild(li);
-	}
-	*/
+picasa.show(user);	
+
 }
 
 
 function viewAlbumsList(req){
+		$('#wrapper').style.display='none';
  var ul=$('#thelist');
+ var al=$('#albumy');
  var ile=req.data.items.length;
 		for (var i=0;i<ile;i++){
 			var	html='';	
+			var	htma='';	
 			var self_link=req.data.items[i].selfLink;			
 			var alt_link=req.data.items[i].alternateLink;
 			var arr=self_link.split('/');
@@ -165,23 +186,25 @@ function viewAlbumsList(req){
 			var albumID=arr[0];			
 			var onklik='pokazAlbum(\''+self_link+'\');';
 			//html+='<a href=./?picasa='+picasa+'&album='+albumID+'>';
-				html+='<div onClick="'+onklik+'" class="ikony_galeria">';
-				html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
-				html+='</div>';
+					//html+='<div onClick="'+onklik+'" class="ikony_galeria">';
+					//html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
+					//html+='</div>';
+
+					htma+='<button onClick="'+onklik+'" class="btn btn-inverse btn-large klik">';
+					htma+=req.data.items[i].title;
+					htma+='</button>';
 			//html+='</a>';
-		var li=document.createElement("LI");
-		li.innerHTML=html;
-		ul.appendChild(li);
+		al.innerHTML+=htma;
+		//var li=document.createElement("LI");
+		//li.innerHTML=html;
+		//ul.appendChild(li);
 		}
-		//$('#thelist').innerHTML=html;
-		//document.getElementById('albums').innerHTML+=html;
-		//pokazAlbum(req.data.items[0].selfLink);
 		loaded();
 }	
 
 
 function pokazAlbum(url_ALBUM){
-return false;
+	//console.log(url_ALBUM);
 	//var imgmax=get_with_geometry().w;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
 	var scriptA=document.createElement('SCRIPT');
@@ -191,19 +214,105 @@ return false;
 	document.getElementsByTagName('head')[0].appendChild(scriptA);
 }
 
+function viewPhotosList(req){
+	//console.log(req);
+//var imgmax=get_with_geometry().w;
+	var ul=$('#thelist');
+	var ile=req.data.items.length;
+	ostatni=ile-1;
+	
+	//var html='<h3 title="Powrót do: '+req.data.author+'"   onClick="history.back();" style="cursor:pointer;"><a href="./?picasa='+picasa+'"> '+req.data.title+' ...</a></h3>';
+	
+	obrazy=[];
+	$('#albumy').style.display='none';
+	$('#wrapper').style.display='block';
+	for (var i=0;i<ile;i++){
+	var id='im'+i;
+		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\');';					
+		html='';
+			html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album">';
+			html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
+			html+='</div>';
+				var li=document.createElement("LI");
+				li.innerHTML=html;
+				ul.appendChild(li);
+		/*
+		obrazy[i]={	'title':req.data.items[i].title, 
+					'obraz':req.data.items[i].media.image.url, 
+					'ikona':req.data.items[i].media.thumbnails[0], 
+					'width':req.data.items[i].media.image.width, 
+					'height':req.data.items[i].media.image.height
+				};
+				
+		*/
+		}		
+		//document.getElementById('photos').innerHTML=html;
+		i=0;
+		//pokazSlide(req.data.items[i].media.image.url,req.data.items[i].media.image.width,req.data.items[i].media.image.height,req.data.items[i].title,'im0',i);
+	loaded();
+}
 
+
+
+function pokazSlide(url,width,height,title,id,i){
+
+	//var img_width=get_with_geometry().w;
+	//var img_height=Math.round(height/(width/img_width));
+	//if (img_width<img_height) {img_width=img_width/2; img_height=img_height/2;}
+	
+//console.log(width+' x '+height+' --- '+img_width+' / '+img_height);
+	//document.getElementById('photo').style.width =img_width+'px';
+	//document.getElementById('photo').style.height=img_height+'px';
+	//document.getElementById('ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" width="'+img_width+'" height="'+img_height+'" title="'+title+'" alt="'+title+'"/>';
+	$('#ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" />';
+	$('#photo').style.display='block';
+	$('#ramka').style.display='block';
+	/*
+	var j=i+1;
+	if (j>ostatni) j=0;
+	if (obrazy[j]) {
+		document.getElementById('photo').style.backgroundImage='url('+obrazy[j].obraz+')';
+		}
+	document.getElementById('photo').style.backgroundSize=width+'px '+height+'px';
+	aktualny=i;
+	*/
+}
+
+function usun(ten,id){
+	//console.log(id);
+	//console.log(ten);
+	//ten.style.display='none';
+	var ramka = document.getElementById('ramka');
+	var slajd = document.getElementById('slajd');
+	//console.log(ramka);
+	//console.log(slajd);
+	ramka.removeChild(slajd);
+	$('#photo').style.display='none';
+	$('#ramka').style.display='none';
+
+}
+
+function menu(){
+	$('#wrapper').style.display='none';
+	$('#albumy').style.display='block';
+	$('#thelist').innerHTML='';
+}
 </script>
 
 </head>
 <body onLoad="onload()">
-<div id="header"><a href="http://cubiq.org/iscroll">Picasa iScroll</a></div>
+<div id="header"><a href="javascript:void(0)" onClick="menu()" >Picasa iScroll</a></div>
+
+<div id="albumy"></div>
 
 <div id="wrapper">
 	<div id="scroller">
-		<ul id="thelist">
-
-		</ul>
+		<ul id="thelist"></ul>
 	</div>
+</div>
+
+<div id="photo">
+<div id="ramka"></div>
 </div>
 
 </body>
