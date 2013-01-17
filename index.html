@@ -113,8 +113,10 @@ background:#000000;
 
 
 <script>
+var ___moje='eede2de857491ec7';
+var ___self=false;
 var menuOpen=false;
-	imgmax = '800';
+var	imgmax = '800';
 	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
 	var icon_albums	= '120c';
 	var icon_photos	= '120c';
@@ -143,6 +145,10 @@ function onload(){
 }
 
     function onDeviceReady() {
+		try {if (device.uuid == ___moje) ___self=true;}
+		catch(er) {
+			if (window.localStorage.getItem('___self___')=='ZnakZorro') ___self=true;
+		}
 		//document.addEventListener("resume", onResume, false);
 		//document.addEventListener("pause", onPause, false);
 		//document.addEventListener("online", onOnline, false);
@@ -151,13 +157,35 @@ function onload(){
 		document.addEventListener("menubutton", onMenuKeyDown, false);		
 		$('#title').innerText=user;
 		var menu=$('#menu');
+
+		if (___self){
+			var arr=[
+				{u:'zszczech',t:'Szczęch'},
+				{u:'znakzorro',t:'ZnakZorro'},
+				{u:'szczecinmojemiasto',t:'Szczecin'},
+				{u:'szczecin.majowe',t:'Majowe'},
+				{u:'widziensko',t:'Widzieńsko'},
+				{u:'galeria111',t:'G111'},
+				{u:'galeria111.111',t:'G111.111'},
+				{u:'www.wizut',t:'WI'},
+				//{u:'',t:''},
+				//{u:'',t:''},
+				];
+			
+			for (var o in arr){
+				var bat=document.createElement("SPAN");
+				bat.innerHTML='<button onClick="zapiszUser(\''+arr[o].u+'\');" class="btn btn-info">'+arr[o].t+'</button>';
+				menu.appendChild(bat);
+			}
+		} //\if ___self
+
 		
 		// add to menu 1
 		var new_user1=window.localStorage.getItem('_picasa_new_user1') || null;
 		if (new_user1){
 			var umenu1=document.createElement("BUTTON");
 			umenu1.innerText=new_user1;
-			umenu1.className='btn btn-info';
+			umenu1.className='btn btn-primary';
 			umenu1.addEventListener('click', zapiszUser1, false);
 			menu.appendChild(umenu1);
 		}
@@ -166,7 +194,7 @@ function onload(){
 		if (new_user2){
 			var umenu2=document.createElement("BUTTON");
 			umenu2.innerText=new_user2;
-			umenu2.className='btn btn-info';
+			umenu2.className='btn btn-primary';
 			umenu2.addEventListener('click', zapiszUser2, false);
 			menu.appendChild(umenu2);
 		}
@@ -175,7 +203,7 @@ function onload(){
 		if (new_user3){
 			var umenu3=document.createElement("BUTTON");
 			umenu3.innerText=new_user3;
-			umenu3.className='btn btn-info';
+			umenu3.className='btn btn-primary';
 			umenu3.addEventListener('click', zapiszUser3, false);
 			menu.appendChild(umenu3);
 		}
@@ -226,9 +254,12 @@ function loaded() {
 
 
 function viewAlbumsList(req){
+if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takiego foto albumu</h1>'; return;}
+
 		$('#wrapper').style.display='none';
  var ul=$('#thelist');
  var al=$('#albumy');
+ al.innerHTML='';
  var ile=req.data.items.length;
 		for (var i=0;i<ile;i++){
 			var	html='';	
@@ -270,6 +301,7 @@ function pokazAlbum(url_ALBUM){
 
 function viewPhotosList(req){
 	//console.log(req);
+	$('#title').innerText=req.data.author+' / '+req.data.title +' / '+req.data.updated;
 //var imgmax=get_with_geometry().w;
 	var ul=$('#thelist');
 	var ile=req.data.items.length;
@@ -375,6 +407,7 @@ function zapiszNewUser(user){
 }
 
 function dodajUser(){
+	$('#menu').style.display='none';
 	var new_user1=window.localStorage.getItem('_picasa_new_user1') || '';
 	var new_user2=window.localStorage.getItem('_picasa_new_user2') || '';
 	var new_user3=window.localStorage.getItem('_picasa_new_user3') || '';
@@ -383,7 +416,7 @@ function dodajUser(){
 	$('#modal_body').innerHTML+='<p>1. <input id="new_user1" value="'+new_user1+'" /></p>';
 	$('#modal_body').innerHTML+='<p>2. <input id="new_user2" value="'+new_user2+'" /></p>';
 	$('#modal_body').innerHTML+='<p>3. <input id="new_user3" value="'+new_user3+'" /></p>';
-	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#menu\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
+	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#modal\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
 }
 
 
@@ -410,7 +443,7 @@ for (var i = 0; i < Anchors.length ; i++) {
 <body onLoad="onload()">
 <div id="header"><a href="javascript:void(0)" onClick="backToAlbumsList()" ><span id="title">Picasa iScroll</span></a></div>
 
-<div id="albumy"></div>
+<div id="albumy"><h1 style="text-align:center; margin-top:4em;">Foto albumu Picasa</h1></div>
 
 <div id="wrapper">
 	<div id="scroller">
@@ -422,13 +455,7 @@ for (var i = 0; i < Anchors.length ; i++) {
 <div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; opacity:1; z-index:10;"> 
 	<button onClick="backToAlbumsList();" class="btn btn-inverse" id='albumy_menu' >Albumy</button>
 	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
-	<button onClick="zapiszUser('zszczech');" class="btn btn-primary">Szczęch</button>
-	<button onClick="zapiszUser('znakzorro');" class="btn btn-primary">ZnakZorro</button>
-	<button onClick="zapiszUser('szczecinmojemiasto');" class="btn btn-info">Szczecin</button>
-	<button onClick="zapiszUser('szczecin.majowe');" class="btn btn-info">Majowe</button>
-	<button onClick="zapiszUser('galeria111');" class="btn btn-warning">Galeria111</button>
-	<button onClick="zapiszUser('galeria111.111');" class="btn btn-warning">Galeria111.111</button>
-	<button onClick="zapiszUser('widziensko');" class="btn btn-success">Widzieńsko</button>
+
 	
 </div>
 
