@@ -9,119 +9,45 @@
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
 <link rel="stylesheet" href="bootstrap.mi.css">
 <style type="text/css" media="all">
-body,ul,li {
-	padding:0;
-	margin:0;
-	border:0;
-color:white;
-background:#000000;
-	-webkit-user-select:none;
-    -webkit-text-size-adjust:none;
-
-}
+body,ul,li {padding:0;margin:0;color:white;background:#000000;-webkit-user-select:none;-webkit-text-size-adjust:none;}
+a,a:link,a:action{text-decoration:none; outline:none;}
 
 #header {
-	position:absolute;
-	top:0; left:0;
-	width:100%;
-	height:45px;
-	line-height:45px;
+	position:absolute;top:0; left:0;width:100%;height:45px;line-height:45px;
 	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #fe96c9), color-stop(0.05, #d51875), color-stop(1, #7b0a2e));
 	background-image:-moz-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
 	background-image:-o-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
-	padding:0;
-	color:#eee;
-	font-size:20px;
-	text-align:center;
+	padding:0;color:#eee;font-size:20px;text-align:center;
 }
-
-#header a {
-	color:#f3f3f3;
-	text-decoration:none;
-	font-weight:bold;
-	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
-}
-
-#wrapper {
-	position:absolute; z-index:1;
-	top:45px; bottom:0; left:0;
-	width:100%;
-	overflow:auto;
-
-}
-
-#scroller {
-	width:800px;
-	float:left;
-	padding:0;
-}
-
-#scroller ul {
-	z-index:2;
-	list-style:none;
-	display:block;
-	float:left;
-	width:100%;
-	height:100%;
-	padding:0;
-	margin:0;
-/*	border:1px solid #aaa;*/
-}
-
-#scroller li {
-	
-	display:block; float:left;
-	width:133.3333px; 
-	height:133.3333px; 
-	background:#444444;
-}
-
-#scroller li div {
-	width:120px;
-	height:120px;
-	margin:6px;
-	
-	background:#fff;
-	cursor:pointer;
-	box-shadow: 3px 3px 6px #888;
-	/*border:1px solid #000;*/
-}
-#scroller li div {box-shadow: 3px 3px 6px #ddd;}
-
-
+#header a {color:#f3f3f3;text-decoration:none;font-weight:bold;text-shadow:0 -1px 0 rgba(0,0,0,0.5);}
+#wrapper {position:absolute; z-index:1;top:45px; bottom:0; left:0;width:100%;overflow:auto;}
+#scroller {width:800px;float:left;padding:0;}
+#scroller ul {z-index:2;list-style:none;display:block;float:left;width:100%;height:100%;padding:0;margin:0;}
+#scroller li {display:block; float:left;width:133.3333px; height:133.3333px;background:#444444;}
+#scroller li div {width:120px;height:120px;margin:6px;background:#fff;cursor:pointer;box-shadow: 3px 3px 6px #888;}
 #albumy {margin-top:45px;}
 .btn {margin:2px;}
 .klik {cursor:pointer;}
-
 #overlay {z-index:3; opacity:0.5; display:none; position:absolute; width:100%; height:100%; background:gray;}
 #photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
 #ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
 #ramka img {z-index:99; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
 #slajd {display:inline;z-index:10; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
-
 #modal      {display:none; z-index:15; position:fixed; top:15px; left: 4%; width:90%; padding:1%; background:#963;}
 #modal_body {padding:1%; background:#444;}
-
-
 .over {position:absolute; width:33.333%; top:0; height:100%; cursor:pointer; z-index:9;}
 .over.left   {left:0;        }
 .over.middle {left:0; margin-left:33.333%; auto;  }
 .over.right  {right:0;       }
 </style>
 
-
-
 <script type="text/javascript" src="cordova-2.2.0.js"></script>
 <script type="text/javascript" src="iscroll.js"></script>
 
-<script type="text/javascript">
-
-//document.addEventListener('DOMContentLoaded', loaded, false);
-</script>
-
-
 
 <script>
+//document.addEventListener('DOMContentLoaded', loaded, false);
+
 var ___moje='eede2de857491ec7';
 var ___self=false;
 var menuOpen=false;
@@ -143,6 +69,15 @@ var $=function (id) {
 		}	
 	}
 	
+function wymiary(){
+	var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],x=w.innerWidth||e.clientWidth||g.clientWidth,y=w.innerHeight||e.clientHeight||g.clientHeight;
+	var _x=Math.round(y*(16/9));
+	var _x=Math.min(x,_x);	
+	var imgmaxW=(Math.floor(_x/160))*160;
+	if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1200;
+	var geometria={'x':x,'y':y,'w':imgmaxW};
+	return geometria;
+}
 
 function onload(){
 
@@ -150,9 +85,7 @@ function onload(){
 		try {if (device.uuid) {document.getElementById('infotest').innerHTML=device.platform+'<br />'+device.uuid;}	}
 		catch(err) {onDeviceReady();}
 
-	var ul=$('#thelist');
-	ul.innerHTML='';
-	picasa.show(user);	
+
 }
 
     function onDeviceReady() {
@@ -165,10 +98,22 @@ function onload(){
 		//document.addEventListener("online", onOnline, false);
 		//document.addEventListener("offline", onOffline, false);
 		//document.addEventListener("backbutton", onBackKeyDown, false);
-		document.addEventListener("menubutton", onMenuKeyDown, false);		
+		document.addEventListener("menubutton", onMenuKeyDown, false);	
+		
+				var x=wymiary().x;
+				x=x*1.5;
+				x=Math.round(x/120)*120;
+				$('#scroller').style.width=x+'px';
+		
 		$('#title').innerText=user;
 		var menu=$('#menu');
-
+		
+		
+	var ul=$('#thelist');
+	ul.innerHTML='';
+	picasa.show(user);	
+	
+	
 		if (___self){
 			var arr=[
 				{u:'zszczech',t:'Szczęch'},
@@ -302,8 +247,7 @@ if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takieg
 
 
 function pokazAlbum(url_ALBUM){
-	//console.log(url_ALBUM);
-	//var imgmax=get_with_geometry().w;
+	var imgmax=wymiary().w;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
 	var scriptA=document.createElement('SCRIPT');
 	scriptA.type='text/javascript';
@@ -318,14 +262,10 @@ function viewPhotosList(req){
 	var zoom=Math.min((30/ile),1);
 	$('#title').innerText=title;
 	$('#title').style.zoom=zoom;
-//var imgmax=get_with_geometry().w;
+
 	var ul=$('#thelist');
 	var ile=req.data.items.length;
 	ostatni=ile-1;
-	
-	//var html='<h3 title="Powrót do: '+req.data.author+'"   onClick="history.back();" style="cursor:pointer;"><a href="./?picasa='+picasa+'"> '+req.data.title+' ...</a></h3>';
-	
-	//obrazy=[];
 	$('#albumy').style.display='none';
 	$('#wrapper').style.display='block';
 	for (var i=0;i<ile;i++){
@@ -339,46 +279,39 @@ function viewPhotosList(req){
 				li.innerHTML=html;
 				ul.appendChild(li);
 				obrazy.push(req.data.items[i].media.image.url);
-		/*
-		obrazy[i]={	'title':req.data.items[i].title, 
-					'obraz':req.data.items[i].media.image.url, 
-					'ikona':req.data.items[i].media.thumbnails[0], 
-					'width':req.data.items[i].media.image.width, 
-					'height':req.data.items[i].media.image.height
-				};
-				
-		*/
 		}		
-		//document.getElementById('photos').innerHTML=html;
-		i=0;
-		//pokazSlide(req.data.items[i].media.image.url,req.data.items[i].media.image.width,req.data.items[i].media.image.height,req.data.items[i].title,'im0',i);
 	loaded();
 }
 
 
 
 function pokazSlide(url,width,height,title,id,i){
-
-	//var img_width=get_with_geometry().w;
-	//var img_height=Math.round(height/(width/img_width));
-	//if (img_width<img_height) {img_width=img_width/2; img_height=img_height/2;}
+		
+		var ramka=$('#ramka');
+		
+		var slajd=$('#slajd');
+		//console.log(ramka.childNodes);
+		//if (slajd != null) ramka.removeChild(slide);
+		
+		var slajd=document.createElement("DIV");
+			slajd.id='slajd';
+			var image=document.createElement("IMG");
+				image.src=url;
+				image.setAttribute('id',id);
+			slajd.appendChild(image);
+		ramka.innerHTML='';
+		ramka.appendChild(slajd);	
 	
-//console.log(width+' x '+height+' --- '+img_width+' / '+img_height);
-	//document.getElementById('photo').style.width =img_width+'px';
-	//document.getElementById('photo').style.height=img_height+'px';
-	//document.getElementById('ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" width="'+img_width+'" height="'+img_height+'" title="'+title+'" alt="'+title+'"/>';
-	$('#ramka').innerHTML='<div id="slajd"><img src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" class="photo" id="'+id+'"  /></div>';
 	$('#photo').style.display='block';
 	$('#ramka').style.display='block';
 	$('#overlay').style.display='block';
 				
-				var slajd=$('#slajd');
+				//var slajd=$('#slajd');
 				var a=parseInt(i);
 				var b=parseInt(i)-1;
 				var n=parseInt(i)+1;
 					var div_left=document.createElement("SPAN");
 					div_left.setAttribute('id','i_'+b);
-					//div_left.innerHTML='<a href="javascript:void(0);" onClick="slajdPrev();"></a>';
 					div_left.className='over left';
 					div_left.addEventListener('click', slajdPrev, false);
 					slajd.appendChild(div_left);
@@ -386,31 +319,21 @@ function pokazSlide(url,width,height,title,id,i){
 					
 					var div_middle=document.createElement("SPAN");
 					div_middle.setAttribute('id','i_'+a);
-					//div_middle.innerHTML='<a href="javascript:void(0);" onClick="usun(this,\''+id+'\');"></a>';
 					div_middle.className='over middle';
 					div_middle.addEventListener('click', slajdClose, false);
 					slajd.appendChild(div_middle);
 					
 					var div_right=document.createElement("SPAN");
 					div_right.setAttribute('id','i_'+n);
-					//div_right.innerHTML='<a href="javascript:void(0);" onClick="slajdNext();"></a>';
 					div_right.className='over right';
 					div_right.addEventListener('click', slajdNext, false);
 					slajd.appendChild(div_right);
 
-	/*
-	var j=i+1;
-	if (j>ostatni) j=0;
-	if (obrazy[j]) {
-		document.getElementById('photo').style.backgroundImage='url('+obrazy[j].obraz+')';
-		}
-	document.getElementById('photo').style.backgroundSize=width+'px '+height+'px';
-	aktualny=i;
-	*/
 }
 
 function slajdPrev(e){
 	var nr=this.id.split('_')[1];
+	if (nr<0) nr=obrazy.length-1;
 	var url=obrazy[nr];
 	var width,height,title=null;
 	pokazSlide(url,width,height,title,'im'+nr,nr);
@@ -418,30 +341,23 @@ function slajdPrev(e){
 }
 function slajdClose(e){
 	var nr=this.id.split('_')[1];
-	//console.log(nr);
 	usun();
 }
 function slajdNext(e){
 	var nr=this.id.split('_')[1];
+	if (nr>=obrazy.length) nr=0;
 	var url=obrazy[nr];
 	var width,height,title=null;
 	pokazSlide(url,width,height,title,'im'+nr,nr);
 }
 
 function usun(ten,id){
-	//console.log(id);
-	//console.log(ten);
-	//ten.style.display='none';
 	var ramka = document.getElementById('ramka');
 	var slajd = document.getElementById('slajd');
-	//console.log(ramka);
-	//console.log(slajd);
 	ramka.removeChild(slajd);
 	$('#photo').style.display='none';
 	$('#ramka').style.display='none';
 	$('#overlay').style.display='none';
-	
-
 }
 
 function backToAlbumsList(){
@@ -455,8 +371,6 @@ function zapiszUser2(){var new_user2=window.localStorage.getItem('_picasa_new_us
 function zapiszUser3(){var new_user3=window.localStorage.getItem('_picasa_new_user3') || null; if (new_user3) zapiszUser(new_user3);}
 
 function zapiszUser(user){
-	
-	//var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
 	window.localStorage.setItem('_picasa_user',user);
 	window.location.reload();
 }
@@ -481,22 +395,6 @@ function dodajUser(){
 	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#modal\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
 }
 
-
-/*
-to bardzo ciekawe do sprawdzenia
-var Anchors = document.getElementsByTagName("a");
-
-for (var i = 0; i < Anchors.length ; i++) {
-    Anchors[i].addEventListener("click", 
-        function (event) {
-            event.preventDefault();
-            if (confirm('Are you sure?')) {
-                window.location = this.href;
-            }
-        }, 
-        false);
-}
-*/
 
 
 </script>
