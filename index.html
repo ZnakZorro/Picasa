@@ -80,10 +80,14 @@ background:#000000;
 	width:120px;
 	height:120px;
 	margin:6px;
-	/*border:1px solid #ddd;*/
+	
 	background:#fff;
 	cursor:pointer;
+	box-shadow: 3px 3px 6px #888;
+	/*border:1px solid #000;*/
 }
+#scroller li div {box-shadow: 3px 3px 6px #ddd;}
+
 
 #albumy {margin-top:45px;}
 .btn {margin:2px;}
@@ -92,12 +96,17 @@ background:#000000;
 #overlay {z-index:3; opacity:0.5; display:none; position:absolute; width:100%; height:100%; background:gray;}
 #photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
 #ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
-#ramka img {z-index:20; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
+#ramka img {z-index:99; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
 #slajd {display:inline;z-index:10; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
 
 #modal      {display:none; z-index:15; position:fixed; top:15px; left: 4%; width:90%; padding:1%; background:#963;}
 #modal_body {padding:1%; background:#444;}
 
+
+.over {position:absolute; width:33.333%; top:0; height:100%; cursor:pointer; z-index:9;}
+.over.left   {left:0;        }
+.over.middle {left:0; margin-left:33.333%; auto;  }
+.over.right  {right:0;       }
 </style>
 
 
@@ -117,6 +126,8 @@ var ___moje='eede2de857491ec7';
 var ___self=false;
 var menuOpen=false;
 var	imgmax = '800';
+var obrazy=[];
+
 	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
 	var icon_albums	= '120c';
 	var icon_photos	= '120c';
@@ -241,6 +252,8 @@ picasa = {
 var myScroll;
 
 function loaded() {
+	if (myScroll) {myScroll.refresh(); return; }
+	
 	myScroll = new iScroll('wrapper', {
 		snap: 'li',
 		momentum: false,
@@ -300,8 +313,11 @@ function pokazAlbum(url_ALBUM){
 }
 
 function viewPhotosList(req){
-	//console.log(req);
-	$('#title').innerText=req.data.author+' / '+req.data.title +' / '+req.data.updated;
+	var title=req.data.author+' / '+req.data.title +' / '+req.data.updated;
+	var ile=title.length;
+	var zoom=Math.min((30/ile),1);
+	$('#title').innerText=title;
+	$('#title').style.zoom=zoom;
 //var imgmax=get_with_geometry().w;
 	var ul=$('#thelist');
 	var ile=req.data.items.length;
@@ -309,12 +325,12 @@ function viewPhotosList(req){
 	
 	//var html='<h3 title="Powrót do: '+req.data.author+'"   onClick="history.back();" style="cursor:pointer;"><a href="./?picasa='+picasa+'"> '+req.data.title+' ...</a></h3>';
 	
-	obrazy=[];
+	//obrazy=[];
 	$('#albumy').style.display='none';
 	$('#wrapper').style.display='block';
 	for (var i=0;i<ile;i++){
 	var id='im'+i;
-		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\');';					
+		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\',\''+i+'\');';					
 		html='';
 			html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album">';
 			html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
@@ -322,6 +338,7 @@ function viewPhotosList(req){
 				var li=document.createElement("LI");
 				li.innerHTML=html;
 				ul.appendChild(li);
+				obrazy.push(req.data.items[i].media.image.url);
 		/*
 		obrazy[i]={	'title':req.data.items[i].title, 
 					'obraz':req.data.items[i].media.image.url, 
@@ -350,11 +367,37 @@ function pokazSlide(url,width,height,title,id,i){
 	//document.getElementById('photo').style.width =img_width+'px';
 	//document.getElementById('photo').style.height=img_height+'px';
 	//document.getElementById('ramka').innerHTML='<img class="photo" id="slajd" src="'+url+'" width="'+img_width+'" height="'+img_height+'" title="'+title+'" alt="'+title+'"/>';
-	$('#ramka').innerHTML='<div id="slajd"><img class="photo" src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" /></div>';
+	$('#ramka').innerHTML='<div id="slajd"><img src="'+url+'" title="'+title+'" alt="'+title+'" onClick="usun(this,\''+id+'\');" class="photo" id="'+id+'"  /></div>';
 	$('#photo').style.display='block';
 	$('#ramka').style.display='block';
 	$('#overlay').style.display='block';
-	
+				
+				var slajd=$('#slajd');
+				var a=parseInt(i);
+				var b=parseInt(i)-1;
+				var n=parseInt(i)+1;
+					var div_left=document.createElement("SPAN");
+					div_left.setAttribute('id','i_'+b);
+					//div_left.innerHTML='<a href="javascript:void(0);" onClick="slajdPrev();"></a>';
+					div_left.className='over left';
+					div_left.addEventListener('click', slajdPrev, false);
+					slajd.appendChild(div_left);
+					
+					
+					var div_middle=document.createElement("SPAN");
+					div_middle.setAttribute('id','i_'+a);
+					//div_middle.innerHTML='<a href="javascript:void(0);" onClick="usun(this,\''+id+'\');"></a>';
+					div_middle.className='over middle';
+					div_middle.addEventListener('click', slajdClose, false);
+					slajd.appendChild(div_middle);
+					
+					var div_right=document.createElement("SPAN");
+					div_right.setAttribute('id','i_'+n);
+					//div_right.innerHTML='<a href="javascript:void(0);" onClick="slajdNext();"></a>';
+					div_right.className='over right';
+					div_right.addEventListener('click', slajdNext, false);
+					slajd.appendChild(div_right);
+
 	/*
 	var j=i+1;
 	if (j>ostatni) j=0;
@@ -364,6 +407,25 @@ function pokazSlide(url,width,height,title,id,i){
 	document.getElementById('photo').style.backgroundSize=width+'px '+height+'px';
 	aktualny=i;
 	*/
+}
+
+function slajdPrev(e){
+	var nr=this.id.split('_')[1];
+	var url=obrazy[nr];
+	var width,height,title=null;
+	pokazSlide(url,width,height,title,'im'+nr,nr);
+
+}
+function slajdClose(e){
+	var nr=this.id.split('_')[1];
+	//console.log(nr);
+	usun();
+}
+function slajdNext(e){
+	var nr=this.id.split('_')[1];
+	var url=obrazy[nr];
+	var width,height,title=null;
+	pokazSlide(url,width,height,title,'im'+nr,nr);
 }
 
 function usun(ten,id){
@@ -468,7 +530,7 @@ for (var i = 0; i < Anchors.length ; i++) {
 <div id="modal">
 <div id="modal_body"></div>
 </div>
-<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px; top:5px; z-index:11;"> << </button>
-<button onClick="onMenuKeyDown()" class="btn btn-inverse" style="position:absolute; right:2px; top:5px; z-index:11;">Menu</button>
+<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
+<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
 </body>
 </html>
