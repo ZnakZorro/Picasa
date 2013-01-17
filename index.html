@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Picasa iScroll</title>
-
+<link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
 <link rel="stylesheet" href="bootstrap.mi.css">
 <style type="text/css" media="all">
 body,ul,li {
@@ -92,7 +92,7 @@ background:#000000;
 #overlay {z-index:3; opacity:0.5; display:none; position:absolute; width:100%; height:100%; background:gray;}
 #photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
 #ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
-#ramka img {z-index:20; opacity:1; text-align:center; max-width:100%;cursor:pointer; border:1px solid white;}
+#ramka img {z-index:20; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
 #slajd {display:inline;z-index:10; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
 
 #modal      {display:none; z-index:15; position:fixed; top:15px; left: 4%; width:90%; padding:1%; background:#963;}
@@ -102,7 +102,7 @@ background:#000000;
 
 
 
-<script type="text/javascript" src="cordova-2.3.0.js"></script>
+<script type="text/javascript" src="cordova-2.2.0.js"></script>
 <script type="text/javascript" src="iscroll.js"></script>
 
 <script type="text/javascript">
@@ -386,6 +386,24 @@ function dodajUser(){
 	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#menu\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
 }
 
+
+/*
+to bardzo ciekawe do sprawdzenia
+var Anchors = document.getElementsByTagName("a");
+
+for (var i = 0; i < Anchors.length ; i++) {
+    Anchors[i].addEventListener("click", 
+        function (event) {
+            event.preventDefault();
+            if (confirm('Are you sure?')) {
+                window.location = this.href;
+            }
+        }, 
+        false);
+}
+*/
+
+
 </script>
 
 </head>
@@ -423,6 +441,7 @@ function dodajUser(){
 <div id="modal">
 <div id="modal_body"></div>
 </div>
-<button onClick="onMenuKeyDown()" class="btn btn-inverse" style="position:absolute; left:2px; top:5px; z-index:11;">Menu</button>
+<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px; top:5px; z-index:11;"> << </button>
+<button onClick="onMenuKeyDown()" class="btn btn-inverse" style="position:absolute; right:2px; top:5px; z-index:11;">Menu</button>
 </body>
 </html>
