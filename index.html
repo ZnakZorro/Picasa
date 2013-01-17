@@ -95,12 +95,14 @@ background:#000000;
 #ramka img {z-index:20; opacity:1; text-align:center; max-width:100%;cursor:pointer; border:1px solid white;}
 #slajd {display:inline;z-index:10; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
 
+#modal      {display:none; z-index:15; position:fixed; top:15px; left: 4%; width:90%; padding:1%; background:#963;}
+#modal_body {padding:1%; background:#444;}
 
 </style>
 
 
 
-<script type="text/javascript" src="cordova-2.2.0.js"></script>
+<script type="text/javascript" src="cordova-2.3.0.js"></script>
 <script type="text/javascript" src="iscroll.js"></script>
 
 <script type="text/javascript">
@@ -148,6 +150,37 @@ function onload(){
 		//document.addEventListener("backbutton", onBackKeyDown, false);
 		document.addEventListener("menubutton", onMenuKeyDown, false);		
 		$('#title').innerText=user;
+		var menu=$('#menu');
+		
+		// add to menu 1
+		var new_user1=window.localStorage.getItem('_picasa_new_user1') || null;
+		if (new_user1){
+			var umenu1=document.createElement("BUTTON");
+			umenu1.innerText=new_user1;
+			umenu1.className='btn btn-info';
+			umenu1.addEventListener('click', zapiszUser1, false);
+			menu.appendChild(umenu1);
+		}
+		// add to menu 2
+		var new_user2=window.localStorage.getItem('_picasa_new_user2') || null;
+		if (new_user2){
+			var umenu2=document.createElement("BUTTON");
+			umenu2.innerText=new_user2;
+			umenu2.className='btn btn-info';
+			umenu2.addEventListener('click', zapiszUser2, false);
+			menu.appendChild(umenu2);
+		}
+		// add to menu 3
+		var new_user3=window.localStorage.getItem('_picasa_new_user3') || null;
+		if (new_user3){
+			var umenu3=document.createElement("BUTTON");
+			umenu3.innerText=new_user3;
+			umenu3.className='btn btn-info';
+			umenu3.addEventListener('click', zapiszUser3, false);
+			menu.appendChild(umenu3);
+		}
+		
+		
 	}
 
 	function onMenuKeyDown() {
@@ -323,6 +356,9 @@ function backToAlbumsList(){
 	$('#thelist').innerHTML='';
 }
 
+function zapiszUser1(){var new_user1=window.localStorage.getItem('_picasa_new_user1') || null; if (new_user1) zapiszUser(new_user1);}
+function zapiszUser2(){var new_user2=window.localStorage.getItem('_picasa_new_user2') || null; if (new_user2) zapiszUser(new_user2);}
+function zapiszUser3(){var new_user3=window.localStorage.getItem('_picasa_new_user3') || null; if (new_user3) zapiszUser(new_user3);}
 
 function zapiszUser(user){
 	
@@ -331,11 +367,23 @@ function zapiszUser(user){
 	window.location.reload();
 }
 
+function zapiszNewUser(user){
+	var new_user1=$('#new_user1').value; if (new_user1) window.localStorage.setItem('_picasa_new_user1',new_user1); else window.localStorage.removeItem('_picasa_new_user1');
+	var new_user2=$('#new_user2').value; if (new_user2) window.localStorage.setItem('_picasa_new_user2',new_user2); else window.localStorage.removeItem('_picasa_new_user2');
+	var new_user3=$('#new_user3').value; if (new_user3) window.localStorage.setItem('_picasa_new_user3',new_user3); else window.localStorage.removeItem('_picasa_new_user3');
+	window.location.reload();
+}
+
 function dodajUser(){
-	alert('dodaj');
-	//var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
-	//window.localStorage.setItem('_picasa_user',user);
-	//window.location.reload();
+	var new_user1=window.localStorage.getItem('_picasa_new_user1') || '';
+	var new_user2=window.localStorage.getItem('_picasa_new_user2') || '';
+	var new_user3=window.localStorage.getItem('_picasa_new_user3') || '';
+	$('#modal').style.display='block';
+	$('#modal_body').innerHTML+='<p></b>Picasa foto albumy</b></p>';
+	$('#modal_body').innerHTML+='<p>1. <input id="new_user1" value="'+new_user1+'" /></p>';
+	$('#modal_body').innerHTML+='<p>2. <input id="new_user2" value="'+new_user2+'" /></p>';
+	$('#modal_body').innerHTML+='<p>3. <input id="new_user3" value="'+new_user3+'" /></p>';
+	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#menu\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
 }
 
 </script>
@@ -353,8 +401,9 @@ function dodajUser(){
 </div>
 
 
-<div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; z-index:2; opacity:0.8; z-index:10;"> 
-	<button onClick="backToAlbumsList();" class="btn btn-inverse">Lista</button>
+<div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; opacity:1; z-index:10;"> 
+	<button onClick="backToAlbumsList();" class="btn btn-inverse" id='albumy_menu' >Albumy</button>
+	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
 	<button onClick="zapiszUser('zszczech');" class="btn btn-primary">Szczęch</button>
 	<button onClick="zapiszUser('znakzorro');" class="btn btn-primary">ZnakZorro</button>
 	<button onClick="zapiszUser('szczecinmojemiasto');" class="btn btn-info">Szczecin</button>
@@ -362,12 +411,17 @@ function dodajUser(){
 	<button onClick="zapiszUser('galeria111');" class="btn btn-warning">Galeria111</button>
 	<button onClick="zapiszUser('galeria111.111');" class="btn btn-warning">Galeria111.111</button>
 	<button onClick="zapiszUser('widziensko');" class="btn btn-success">Widzieńsko</button>
-	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
+	
 </div>
 
 <div id="overlay"></div>
 <div id="photo">
 <div id="ramka"></div>
+</div>
+
+
+<div id="modal">
+<div id="modal_body"></div>
 </div>
 <button onClick="onMenuKeyDown()" class="btn btn-inverse" style="position:absolute; left:2px; top:5px; z-index:11;">Menu</button>
 </body>
