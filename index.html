@@ -8,54 +8,8 @@
 <title>Picasa iScroll</title>
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
 <link rel="stylesheet" href="bootstrap.mi.css">
+<link href="picasa.css" rel="stylesheet">
 <style type="text/css" media="all">
-body {padding:0;margin:0;color:white;-webkit-user-select:none;-webkit-text-size-adjust:none; background:black; color:white;}
-ul,li {}
-a,a:link,a:action{text-decoration:none; outline:none;}
-
-#header {
-	position:absolute;top:0; left:0;width:100%;height:45px;line-height:45px;
-	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #fe96c9), color-stop(0.05, #d51875), color-stop(1, #7b0a2e));
-	background-image:-moz-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
-	background-image:-o-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
-	padding:0;color:#eee;font-size:20px;text-align:center;
-}
-#header a {color:#f3f3f3;text-decoration:none;font-weight:bold;text-shadow:0 -1px 0 rgba(0,0,0,0.5);}
-#wrapper {position:absolute; z-index:1;top:45px; bottom:0; left:0;width:100%;overflow:auto; background:#000; color:white;}
-#scroller {width:800px;float:left;padding:0;background:white; color:black;}
-#scroller ul {z-index:2;list-style:none;display:block;float:left;width:100%;height:100%;padding:0;margin:0;}
-#scroller li {display:block; float:left;width:133.3333px; height:133.3333px;}
-#scroller li div {width:120px;height:120px;margin:6px;background:#fff;cursor:pointer;box-shadow: 3px 3px 6px #888;}
-#albumy {margin-top:45px; background:#000; color:#fff;}
-.btn {margin:2px;}
-.klik {cursor:pointer;}
-#overlay {z-index:3; opacity:0.9; display:none; position:absolute; width:100%; height:100%; background:gray;}
-#photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
-#ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
-#ramka img {z-index:92; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
-#slajd {display:inline;z-index:91; opacity:1; text-align:center; max-width:100%;cursor:pointer;}
-#modal      {display:none; z-index:15; position:fixed; top:15px; left: 4%; width:90%; padding:1%; background:#963;}
-#modal_body {padding:1%; background:#444;}
-.over {position:absolute; width:33.333%; top:0; height:100%; cursor:pointer; z-index:90;}
-.over.left   {left:0;        }
-.over.middle {left:0; margin-left:33.333%; auto;  }
-.over.right  {right:0;       }
-
-.aniblue { -webkit-animation-name: bluePulse; -webkit-animation-duration: 2s;}
-.anired { -webkit-animation-name: redPulse; -webkit-animation-duration: 4s; }
-
-@-webkit-keyframes bluePulse {
-  from { background-color: #007d9a; -webkit-box-shadow: 0 0 9px #333; }
-  50% { background-color: #2daebf; -webkit-box-shadow: 0 0 18px #2daebf; }
-  to { background-color: #007d9a; -webkit-box-shadow: 0 0 9px #333; }
-}
-
-
-@-webkit-keyframes redPulse {
-  from { background-color: #bc330d; -webkit-box-shadow: 0 0 9px #333; }
-  50% { background-color: #e33100; -webkit-box-shadow: 0 0 18px #e33100; }
-  to { background-color: #bc330d; -webkit-box-shadow: 0 0 9px #333; }
-}
 
 </style>
 
@@ -124,7 +78,7 @@ function onload(){
 		//document.addEventListener("pause", onPause, false);
 		//document.addEventListener("online", onOnline, false);
 		//document.addEventListener("offline", onOffline, false);
-		//document.addEventListener("backbutton", onBackKeyDown, false);
+		document.addEventListener("backbutton", onBackKeyDown, false);
 		document.addEventListener("menubutton", onMenuKeyDown, false);	
 		
 				var x=wymiary().x;
@@ -202,6 +156,11 @@ function onload(){
 		
 	}
 
+	function onBackKeyDown() {	
+		backToAlbumsList();
+	}
+	
+	
 	function onMenuKeyDown() {
 		window.localStorage.removeItem('_picasa_url');
 		if (menuOpen) {$("#menu").style.display="none";menuOpen=false;}
@@ -286,13 +245,13 @@ if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takieg
 
 
 function pokazAlbum(url_ALBUM){
-//console.log(url_ALBUM);
-	//window.localStorage.setItem('_picasa_url',url_ALBUM);
+	if (!url_ALBUM) return;
+	//console.log(url_ALBUM);
+	window.localStorage.setItem('_picasa_url',url_ALBUM);
 	var imgmax=wymiary().w;
-
-//$('#test').innerHTML=imgmax;
+	//$('#test').innerHTML=imgmax;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
-//console.log(url_ALBUM);
+	//console.log(url_ALBUM);
 
 	if ($('#pokazAlbum')) document.getElementsByTagName('head')[0].removeChild($('#pokazAlbum'));
 	var scriptA=document.createElement('SCRIPT');
@@ -304,7 +263,7 @@ function pokazAlbum(url_ALBUM){
 }
 
 function viewPhotosList(req){
-console.log(req);
+//console.log(req);
 	var title=req.data.author+' / '+req.data.title +' / '+req.data.updated;
 	var ile=title.length;
 	var wymiar=wymiary();
@@ -356,29 +315,29 @@ function pokazSlide(url,width,height,title,id,i){
 	$('#photo').style.display='block';
 	$('#ramka').style.display='block';
 	$('#overlay').style.display='block';
-				
-				//var slajd=$('#slajd');
-				var a=parseInt(i);
-				var b=parseInt(i)-1;
-				var n=parseInt(i)+1;
-					var div_left=document.createElement("SPAN");
-					div_left.setAttribute('id','i_'+b);
-					div_left.className='over left';
-					div_left.addEventListener('click', slajdPrev, false);
-					slajd.appendChild(div_left);
-					
-					
-					var div_middle=document.createElement("SPAN");
-					div_middle.setAttribute('id','i_'+a);
-					div_middle.className='over middle';
-					div_middle.addEventListener('click', slajdClose, false);
-					slajd.appendChild(div_middle);
-					
-					var div_right=document.createElement("SPAN");
-					div_right.setAttribute('id','i_'+n);
-					div_right.className='over right';
-					div_right.addEventListener('click', slajdNext, false);
-					slajd.appendChild(div_right);
+		
+		//var slajd=$('#slajd');
+		var a=parseInt(i);
+		var b=parseInt(i)-1;
+		var n=parseInt(i)+1;
+			var div_left=document.createElement("SPAN");
+			div_left.setAttribute('id','i_'+b);
+			div_left.className='over left';
+			div_left.addEventListener('click', slajdPrev, false);
+			slajd.appendChild(div_left);
+			
+			
+			var div_middle=document.createElement("SPAN");
+			div_middle.setAttribute('id','i_'+a);
+			div_middle.className='over middle';
+			div_middle.addEventListener('click', slajdClose, false);
+			slajd.appendChild(div_middle);
+			
+			var div_right=document.createElement("SPAN");
+			div_right.setAttribute('id','i_'+n);
+			div_right.className='over right';
+			div_right.addEventListener('click', slajdNext, false);
+			slajd.appendChild(div_right);
 
 }
 
@@ -446,6 +405,12 @@ function dodajUser(){
 	$('#modal_body').innerHTML+='<p><button onClick="zapiszNewUser();" class="btn btn-primary">Zapisz</button><button onClick="$(\'#modal\').style.display=\'none\';" class="btn btn-warning">Zamknij</button></p>';
 }
 
+function koniec(){
+	try  {navigator.app.exitApp();}
+	catch(err) {
+	  //window.scrollTo(0,0);
+	  }
+}
 
 
 </script>
@@ -466,13 +431,14 @@ function dodajUser(){
 <div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; opacity:1; z-index:10;"> 
 	<button onClick="backToAlbumsList();" class="btn btn-inverse" id='albumy_menu' >Albumy</button>
 	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
+	<button onClick="koniec();" class="btn btn-warning">Koniec</button>
 
 	
 </div>
 
 <div id="overlay"></div>
 <div id="photo">
-<div id="ramka"><img src="icon.png" /></div>
+<div id="ramka" class="aniwhite"><img src="icon.png" /></div>
 </div>
 
 
