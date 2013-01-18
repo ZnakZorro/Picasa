@@ -40,6 +40,23 @@ a,a:link,a:action{text-decoration:none; outline:none;}
 .over.left   {left:0;        }
 .over.middle {left:0; margin-left:33.333%; auto;  }
 .over.right  {right:0;       }
+
+.aniblue { -webkit-animation-name: bluePulse; -webkit-animation-duration: 2s;}
+.anired { -webkit-animation-name: redPulse; -webkit-animation-duration: 4s; }
+
+@-webkit-keyframes bluePulse {
+  from { background-color: #007d9a; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: #2daebf; -webkit-box-shadow: 0 0 18px #2daebf; }
+  to { background-color: #007d9a; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+
+@-webkit-keyframes redPulse {
+  from { background-color: #bc330d; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: #e33100; -webkit-box-shadow: 0 0 18px #e33100; }
+  to { background-color: #bc330d; -webkit-box-shadow: 0 0 9px #333; }
+}
+
 </style>
 
 <script type="text/javascript" src="cordova-2.2.0.js"></script>
@@ -247,7 +264,7 @@ if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takieg
 					//html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
 					//html+='</div>';
 
-					htma+='<button onClick="'+onklik+'" class="btn btn-inverse btn-large klik">';
+					htma+='<button onClick="'+onklik+'" class="btn btn-inverse btn-large klik  anired">';
 					htma+=req.data.items[i].title;
 					htma+='</button>';
 			//html+='</a>';
@@ -291,7 +308,7 @@ obrazy.length=0;
 	var id='im'+i;
 		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\',\''+i+'\');';					
 		html='';
-			html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album">';
+			html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album aniblue">';
 			html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
 			html+='</div>';
 				var li=document.createElement("LI");
