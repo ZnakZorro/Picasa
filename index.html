@@ -9,7 +9,8 @@
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
 <link rel="stylesheet" href="bootstrap.mi.css">
 <style type="text/css" media="all">
-body,ul,li {padding:0;margin:0;color:white;background:#000000;-webkit-user-select:none;-webkit-text-size-adjust:none;}
+body {padding:0;margin:0;color:white;-webkit-user-select:none;-webkit-text-size-adjust:none; background:black; color:white;}
+ul,li {}
 a,a:link,a:action{text-decoration:none; outline:none;}
 
 #header {
@@ -20,15 +21,15 @@ a,a:link,a:action{text-decoration:none; outline:none;}
 	padding:0;color:#eee;font-size:20px;text-align:center;
 }
 #header a {color:#f3f3f3;text-decoration:none;font-weight:bold;text-shadow:0 -1px 0 rgba(0,0,0,0.5);}
-#wrapper {position:absolute; z-index:1;top:45px; bottom:0; left:0;width:100%;overflow:auto;}
-#scroller {width:800px;float:left;padding:0;}
+#wrapper {position:absolute; z-index:1;top:45px; bottom:0; left:0;width:100%;overflow:auto; background:#000; color:white;}
+#scroller {width:800px;float:left;padding:0;background:white; color:black;}
 #scroller ul {z-index:2;list-style:none;display:block;float:left;width:100%;height:100%;padding:0;margin:0;}
-#scroller li {display:block; float:left;width:133.3333px; height:133.3333px;background:#444444;}
+#scroller li {display:block; float:left;width:133.3333px; height:133.3333px;}
 #scroller li div {width:120px;height:120px;margin:6px;background:#fff;cursor:pointer;box-shadow: 3px 3px 6px #888;}
-#albumy {margin-top:45px;}
+#albumy {margin-top:45px; background:#000; color:#fff;}
 .btn {margin:2px;}
 .klik {cursor:pointer;}
-#overlay {z-index:3; opacity:0.5; display:none; position:absolute; width:100%; height:100%; background:gray;}
+#overlay {z-index:3; opacity:0.9; display:none; position:absolute; width:100%; height:100%; background:gray;}
 #photo {z-index:4; opacity:1; display:none; position:absolute; top:0; left:0; width:100%; height:100%;}
 #ramka {z-index:5; opacity:1; display:none; text-align:center;width:100%; height:100%;}
 #ramka img {z-index:99; opacity:1; text-align:center; max-width:99%;cursor:pointer; border:2px solid white;}
@@ -73,8 +74,8 @@ function wymiary(){
 	var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],x=w.innerWidth||e.clientWidth||g.clientWidth,y=w.innerHeight||e.clientHeight||g.clientHeight;
 	var _x=Math.round(y*(16/9));
 	var _x=Math.min(x,_x);	
-	var imgmaxW=(Math.floor(_x/160))*160;
-	if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1200;
+	var imgmaxW=(Math.floor(_x/80))*80;
+	//if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1200;
 	var geometria={'x':x,'y':y,'w':imgmaxW};
 	return geometria;
 }
@@ -84,6 +85,11 @@ function onload(){
         document.addEventListener("deviceready", onDeviceReady, false);
 		try {if (device.uuid) {document.getElementById('infotest').innerHTML=device.platform+'<br />'+device.uuid;}	}
 		catch(err) {onDeviceReady();}
+		
+		window.onresize=function(){
+			var url_ALBUM=window.localStorage.getItem('_picasa_url');
+			pokazAlbum(url_ALBUM);
+		};
 
 
 }
@@ -111,7 +117,11 @@ function onload(){
 		
 	var ul=$('#thelist');
 	ul.innerHTML='';
-	picasa.show(user);	
+	
+		var url_ALBUM=window.localStorage.getItem('_picasa_url') || null;
+		if (url_ALBUM) pokazAlbum(url_ALBUM);
+		else
+		picasa.show(user);	
 	
 	
 		if (___self){
@@ -168,6 +178,7 @@ function onload(){
 	}
 
 	function onMenuKeyDown() {
+		window.localStorage.removeItem('_picasa_url');
 		if (menuOpen) {$("#menu").style.display="none";menuOpen=false;}
 		else          {$("#menu").style.display="block";menuOpen=true;}	
     }	
@@ -184,9 +195,12 @@ picasa = {
 			//document.getElementById('albums').style.display='block';
 			var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '?category=album&alt=jsonc&callback=viewAlbumsList&access=public&thumbsize=' + icon_albums;
 		}
-	//console.log(urlPICASA);	
+	//console.log(urlPICASA);
+					if ($('#pokazPicasa')) document.getElementsByTagName('head')[0].removeChild($('#pokazPicasa'));
+
 		var script=document.createElement('SCRIPT');
 		script.type='text/javascript';
+		script.id='pokazPicasa';
 		script.src=urlPICASA;
 		document.getElementsByTagName('head')[0].appendChild(script);
 		//rysujStrzalki();
@@ -247,10 +261,15 @@ if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takieg
 
 
 function pokazAlbum(url_ALBUM){
+	window.localStorage.setItem('_picasa_url',url_ALBUM);
 	var imgmax=wymiary().w;
+	$('#test').innerHTML=imgmax;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
+
+	if ($('#pokazAlbum')) document.getElementsByTagName('head')[0].removeChild($('#pokazAlbum'));
 	var scriptA=document.createElement('SCRIPT');
 	scriptA.type='text/javascript';
+	scriptA.id='pokazAlbum';
 	var aplus='&callback=viewPhotosList&thumbsize='+icon_photos+'&imgmax='+imgmax;
 	scriptA.src=url_ALBUM+aplus;
 	document.getElementsByTagName('head')[0].appendChild(scriptA);
@@ -262,7 +281,7 @@ function viewPhotosList(req){
 	var zoom=Math.min((30/ile),1);
 	$('#title').innerText=title;
 	$('#title').style.zoom=zoom;
-
+obrazy.length=0;
 	var ul=$('#thelist');
 	var ile=req.data.items.length;
 	ostatni=ile-1;
@@ -281,16 +300,18 @@ function viewPhotosList(req){
 				obrazy.push(req.data.items[i].media.image.url);
 		}		
 	loaded();
+	//console.log(obrazy.length);
+	//console.log(obrazy);
 }
 
 
 
 function pokazSlide(url,width,height,title,id,i){
-		
+		//console.log(url);
 		var ramka=$('#ramka');
 		
 		var slajd=$('#slajd');
-		//console.log(ramka.childNodes);
+		
 		//if (slajd != null) ramka.removeChild(slide);
 		
 		var slajd=document.createElement("DIV");
@@ -421,7 +442,7 @@ function dodajUser(){
 
 <div id="overlay"></div>
 <div id="photo">
-<div id="ramka"></div>
+<div id="ramka"><img src="icon.png" /></div>
 </div>
 
 
@@ -430,5 +451,8 @@ function dodajUser(){
 </div>
 <button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
 <button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
+
+<div id="test" style="position:fixed; top:60px; right:3px; border:1px solid silver; z-index:99; padding:3px; "></div>
+
 </body>
 </html>
