@@ -91,8 +91,10 @@ function wymiary(){
 	var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],x=w.innerWidth||e.clientWidth||g.clientWidth,y=w.innerHeight||e.clientHeight||g.clientHeight;
 	var _x=Math.round(y*(16/9));
 	var _x=Math.min(x,_x);	
+	if (___self) _x=_x*2; // bo skalowanie smartfonow
 	var imgmaxW=(Math.floor(_x/80))*80;
-	//if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1200;
+	if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1280;
+	if (imgmaxW>1600) imgmaxW=1600;
 	var geometria={'x':x,'y':y,'w':imgmaxW};
 	return geometria;
 }
@@ -139,10 +141,13 @@ function onload(){
 	ul.innerHTML='';
 	
 		var url_ALBUM=window.localStorage.getItem('_picasa_url') || null;
-		if (url_ALBUM) pokazAlbum(url_ALBUM);
-		else
-		picasa.show(user);	
-	
+		if (url_ALBUM) {
+			pokazAlbum(url_ALBUM);
+			
+			}
+		else {
+			picasa.show(user);	
+			}
 	
 		if (___self){
 			var arr=[
@@ -216,8 +221,8 @@ picasa = {
 			var urlPICASA='http://picasaweb.google.com/data/feed/base/user/' + user + '?category=album&alt=jsonc&callback=viewAlbumsList&access=public&thumbsize=' + icon_albums;
 		}
 	//console.log(urlPICASA);
-					if ($('#pokazPicasa')) document.getElementsByTagName('head')[0].removeChild($('#pokazPicasa'));
-
+					
+		if ($('#pokazPicasa')) document.getElementsByTagName('head')[0].removeChild($('#pokazPicasa'));
 		var script=document.createElement('SCRIPT');
 		script.type='text/javascript';
 		script.id='pokazPicasa';
@@ -281,11 +286,13 @@ if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takieg
 
 
 function pokazAlbum(url_ALBUM){
-	window.localStorage.setItem('_picasa_url',url_ALBUM);
+//console.log(url_ALBUM);
+	//window.localStorage.setItem('_picasa_url',url_ALBUM);
 	var imgmax=wymiary().w;
-	if (___self) imgmax= imgmax*2; // bo skalowanie smartfonow
+
 //$('#test').innerHTML=imgmax;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
+//console.log(url_ALBUM);
 
 	if ($('#pokazAlbum')) document.getElementsByTagName('head')[0].removeChild($('#pokazAlbum'));
 	var scriptA=document.createElement('SCRIPT');
@@ -297,9 +304,11 @@ function pokazAlbum(url_ALBUM){
 }
 
 function viewPhotosList(req){
+console.log(req);
 	var title=req.data.author+' / '+req.data.title +' / '+req.data.updated;
 	var ile=title.length;
-	var zoom=Math.min((30/ile),1);
+	var wymiar=wymiary();
+	var zoom=Math.min((wymiar.x/ile/15),1);
 	$('#title').innerText=title;
 	$('#title').style.zoom=zoom;
 obrazy.length=0;
@@ -473,7 +482,7 @@ function dodajUser(){
 <button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
 <button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
 
-<div id="test" style="position:fixed; top:60px; right:3px; border:1px solid silver; z-index:99; padding:3px; "></div>
+<div id="test" style="display:none; position:fixed; top:60px; right:3px; z-index:99; padding:3px; "></div>
 
 </body>
 </html>
