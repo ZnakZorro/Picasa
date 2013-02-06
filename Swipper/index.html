@@ -1,0 +1,225 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="pl">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Picasa Swiper</title>
+
+
+<!--link rel="stylesheet" href="pliki/bootstrap-combined.min.css"-->
+<link rel="stylesheet" href="pliki/idangerous.swiper.css">
+
+<style>
+body {font-family:arial; font-size:15px; margin:0; padding:0; background:#222;}
+
+.swiper1, .swiper1 .swiper-slide{
+	width: 100%;
+	height: 100%;
+	margin:0; padding:0;
+}
+.swiper-slide img {width:100%; height:auto; max-height:100%;}
+
+.content-slide {
+	width:97.8%; 
+	height:auto; 
+	max-height:100%;
+	background: #fff;
+	padding: 2%;
+	margin:0;
+	border-radius: 5px;
+	border:1px solid gray;
+	overflow: hidden;
+}
+.cs-1, .cs-2 {
+	padding: 2%;
+	margin: 2%;
+	float: left;
+	width:39%;
+}
+.cs-1 {
+	background: #333;
+	color: #fff;
+}
+.cs-2 {
+	background: #ad2e4c;
+	color: #fff;
+}
+
+#test {background:orange;}
+.swiper-slide div {padding:1%;}
+
+
+body {overflow: hidden;}
+
+</style>
+
+
+<script  src="cordova-2.2.0.js"></script>
+<script  src="pliki/idangerous.swiper-1.8.min.js"></script>
+
+<script>
+var ___moje='eede2de857491ec7';
+var ___self=false;
+var menuOpen=false;
+
+function onload(){
+        document.addEventListener("deviceready", onDeviceReady, false);
+		
+		try {if (device.uuid) {	}	}
+		catch(err) {onDeviceReady();}
+
+ 		
+
+	}
+	
+    function onDeviceReady() {
+		try {if (device.uuid == ___moje) ___self=true;}
+		catch(er) {
+			if (window.localStorage.getItem('___self___')=='ZnakZorro') ___self=true;
+		}
+
+		document.addEventListener("backbutton", onBackKeyDown, false);
+		document.addEventListener("menubutton", onMenuKeyDown, false);		
+
+		// stawskie
+		url='http://picasaweb.google.com/data/entry/base/user/114301764978123177574/albumid/5826314318005096257?alt=jsonc&amp;hl=pl';
+		//shodo
+		var url='http://picasaweb.google.com/data/entry/base/user/103862067778015781731/albumid/5834496646868592273?alt=jsonc&amp;hl=pl';
+		pokazAlbum(url);
+
+	}
+	
+	
+	function onBackKeyDown() {
+    }
+	
+	function onMenuKeyDown() {
+    }		
+	
+
+//pppppppppppppppppppppppppppppppppppppppppppppppppppp
+
+	var icon_albums	= '120c';
+	var icon_photos	= '120c';
+	var ile_obrazkow=0;
+	var ile_obrazkow_max;
+
+var $=function (id) {
+	var prefix=id[0];
+	var iid=id.slice(1,id.length);
+	switch (prefix){
+		case '#':	return document.getElementById(iid);   			break;
+		case '.':	return document.getElementsByClassName(iid);  	break;
+		default:	return document.getElementsByTagName(id); 
+		}	
+	}
+	
+function wymiary(){
+
+	var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],x=w.innerWidth||e.clientWidth||g.clientWidth,y=w.innerHeight||e.clientHeight||g.clientHeight;
+	var _x=Math.round(y*(16/9));
+	var _x=Math.min(x,_x);	
+	if (___self) _x=_x*2; // bo skalowanie smartfonow
+	var imgmaxW=(Math.floor(_x/80))*80;
+	if (imgmaxW>1200 && imgmaxW<1599) imgmaxW=1280;
+	if (imgmaxW>1600) imgmaxW=1600;
+	var geometria={'x':x,'y':y,'w':imgmaxW};
+	return geometria;
+}
+
+function pokazAlbum(url_ALBUM){
+	if (!url_ALBUM) return;
+	//console.log(url_ALBUM);
+	window.localStorage.setItem('_picasa_url',url_ALBUM);
+	var imgmax=wymiary().w;
+	//console.log(imgmax);
+	//$('#test').innerHTML=imgmax;
+	//imgmax=1200;
+	url_ALBUM=url_ALBUM.replace('entry','feed');
+	//console.log(url_ALBUM);
+
+	if ($('#pokazAlbum')) document.getElementsByTagName('head')[0].removeChild($('#pokazAlbum'));
+	var scriptA=document.createElement('SCRIPT');
+	scriptA.type='text/javascript';
+	scriptA.id='pokazAlbum';
+	var aplus='&callback=viewPhotosList&thumbsize='+icon_photos+'&imgmax='+imgmax;
+	scriptA.src=url_ALBUM+aplus;
+	document.getElementsByTagName('head')[0].appendChild(scriptA);
+}
+
+function viewPhotosList(req){
+//console.log(req);
+	var title=req.data.author+' / '+req.data.title +' / '+req.data.updated;
+	var ile=title.length;
+	var wymiar=wymiary();
+	var zoom=Math.min((wymiar.x/ile/15),1);
+	//$('#title').innerText=title;
+	//$('#title').style.zoom=zoom;
+//obrazy.length=0;
+	var slajdy=$('#slajdy');
+	var ile=req.data.items.length;
+	ile_obrazkow_max=ile;
+
+	ostatni=ile-1;
+	//$('#albumy').style.display='none';
+	//$('#wrapper').style.display='block';
+	for (var i=0;i<ile;i++){
+	var id='im'+i;
+		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\',\''+i+'\');';					
+		//html='';
+			//html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album aniblue">';
+			//html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
+			//html+='</div>';
+			html='<img src="'+req.data.items[i].media.image.url+'" onload="zaladowany(this.id)" />';
+			//console.log(req.data.items[i].media);
+				var slajd=document.createElement("DIV");
+				slajd.className='swiper-slide';
+				slajd.innerHTML=html;
+				slajdy.appendChild(slajd);
+				//obrazy.push(req.data.items[i].media.image.url);
+		}		
+	//loaded();
+	//console.log(obrazy.length);
+	//console.log(obrazy);
+}
+
+
+function zaladowany(ten){
+	var mySwiper = new Swiper('.swiper1',{});
+	/*
+	ile_obrazkow++;
+	$('#infotest').innerHTML='<h1>'+ile_obrazkow+' / '+ile_obrazkow_max+'</h1>';
+	if (ile_obrazkow == ile_obrazkow_max) var mySwiper = new Swiper('.swiper1',{});
+	*/
+
+}
+//ppppppppppppppppppppppppppppppppppppppppppppppppppp
+
+
+	
+</script>	
+
+
+
+
+</head>
+
+<body onload="onload()">
+
+<div class="container-fluid">
+  
+		<div class="swiper-container swiper1">
+			<div class="swiper-wrapper" id="slajdy"></div>
+		</div>
+</div>
+
+	
+<!--
+		<div id="infotest" style="position:fixed; top:10px; right:10px;z-index:9; color:white; ">...</div>
+-->
+</body>
+</html>
