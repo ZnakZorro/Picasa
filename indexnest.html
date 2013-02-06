@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Picasa Nested layout</title>
@@ -11,7 +11,7 @@
 
 <style type="text/css" media="all">
 body {background:#000;}
-header {position:fixed; top:0; left:0; z-index:99;}
+
 #ramka {display:none;}
 
 .box {list-style:none;overflow: hidden; float:left; 
@@ -412,7 +412,7 @@ function usun(ten,id){
 function backToAlbumsList(){
 	$('#wrapper').css('display','none');
 	$('#albumy').css('display','block');
-	$('#thelist').innerHTML='';
+	//$('#thelist').innerHTML='';
 }
 
 function zapiszUser1(){var new_user1=window.localStorage.getItem('_picasa_new_user1') || null; if (new_user1) zapiszUser(new_user1);}
@@ -457,9 +457,12 @@ function koniec(){
 </head>
 <body onLoad="onload()">
 <header>
-	<button onClick="backToAlbumsList()" class="btn btn-inverse" style=""> << </button>
-	<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="">Menu</button>
+	<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
+	<a href="index.html" style="margin-left:8em; position: relative; color:white; font-weight:bold;">iScrollGrid</a>
+	<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
 </header>
+
+
 
 <div id="albumy"><h1 style="text-align:center; margin-top:4em;">Foto albumu Picasa</h1></div>
 
@@ -474,8 +477,6 @@ function koniec(){
 	<button onClick="backToAlbumsList();" class="btn btn-inverse" id='albumy_menu' >Albumy</button>
 	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
 	<button onClick="koniec();" class="btn btn-warning">Koniec</button>
-
-	
 </div>
 
 <div id="overlay"></div>

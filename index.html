@@ -417,6 +417,13 @@ function koniec(){
 
 </head>
 <body onLoad="onload()">
+<header>
+	<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
+	<a href="indexnest.html" style="margin-left:8em; position: relative; color:white; font-weight:bold;">NestedGrid</a>
+	<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
+</header>
+
+
 <div id="header"><a href="javascript:void(0)" onClick="backToAlbumsList()" ><span id="title">Picasa iScroll</span></a></div>
 
 <div id="albumy"><h1 style="text-align:center; margin-top:4em;">Foto albumu Picasa</h1></div>
@@ -445,9 +452,6 @@ function koniec(){
 <div id="modal">
 <div id="modal_body"></div>
 </div>
-<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
-<a href="indexnest.html" style="margin-left:8em; position: relative; color:white; font-weight:bold;">NestedGrid</a>
-<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
 
 <div id="test" style="display:none; position:fixed; top:60px; right:3px; z-index:99; padding:3px; "></div>
 
