@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Nested</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery-1.7.1.min.js"><\/script>')</script>
+<script src="jquery.nested.js"></script>
+<script src="makeboxes.js"></script>
+</head>
+<body>
+
+<a class="btn" id="prepend">Prepend</a>
+
+<div id="container">
+  <div class="box size31">1  &nbsp; alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa</div>
+  <div class="box size21">2 &nbsp; alfa</div>
+  <div class="box size32">3 &nbsp; alfa</div>
+  <div class="box size11">4 &nbsp; alfa</div>
+  <div class="box size21">5 &nbsp; alfa</div>
+  <div class="box size12">6 &nbsp; alfa</div>
+  <div class="box size21">7 &nbsp; alfa</div>
+  <div class="box size11">8 &nbsp; alfa</div>
+  <div class="box size31">9 &nbsp; alfa</div>
+  <div class="box size22">10 &nbsp; alfa</div>
+  <div class="box size11">11 &nbsp; alfa</div>
+  <div class="box size21">12 &nbsp; alfa</div>
+  <div class="box size12">13 &nbsp; alfa</div>
+  <div class="box size21">14 &nbsp; alfa</div>
+  <div class="box size23">15 &nbsp; alfa</div>
+  <div class="box size22">16 &nbsp; alfa</div>
+  <div class="box size11">17 &nbsp; alfa</div>
+  <div class="box size21">18 &nbsp; alfa</div>
+  <div class="box size12">19 &nbsp; alfa</div>
+  <div class="box size21">20 &nbsp; alfa</div>
+  <div class="box size22">21 &nbsp; alfa</div>
+  <div class="box size23">22 &nbsp; alfa</div>
+  <div class="box size11">23 &nbsp; alfa</div>
+  <div class="box size21">24 &nbsp; alfa</div>
+  <div class="box size12">25 &nbsp; alfa</div>
+  <div class="box size21">26 &nbsp; alfa</div>
+  <div class="box size22">27 &nbsp; alfa</div>
+  <div class="box size22">28 &nbsp; alfa</div>
+</div>
+
+<a class="btn" id="append">Append</a>
+
+<script type="text/javascript" >
+  
+  $(function() { 
+   
+    $('#container').nested(); 
+    
+    $('#prepend').click(function(){
+      var boxes = makeBoxes();
+      $('#container').prepend(boxes).nested('prepend',boxes);
+    })
+    $('#append').click(function(){
+      var boxes = makeBoxes();
+      $('#container').append(boxes).nested('append',boxes);     
+    })
+
+	
+	
+  });
+  
+var t= setInterval(function(){
+console.log(1);
+      var boxes = makeBoxes();
+      $('#container').append(boxes).nested('append',boxes);     
+},2500);	
+  
+</script>
+  
+</body>
+</html>    

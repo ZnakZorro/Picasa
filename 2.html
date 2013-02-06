@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Picasa iScroll</title>
+<link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
+<link rel="stylesheet" href="bootstrap.mi.css">
+<style type="text/css" media="all">
+div {border:solid}
+</style>
+
+<!--
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="Nested/js/jquery-1.7.1.min.js"><\/script>')</script>
+-->
+<script src="Nested/js/jquery.min.js"></script>
+<script src="Nested/jquery.nested.js"></script>
+
+
+
+</head>
+<body>
+<div id="header"><a href="javascript:void(0)" onClick="backToAlbumsList()" ><span id="title">Picasa iScroll</span></a></div>
+
+<div id="albumy"><h1 style="text-align:center; margin-top:4em;">Foto albumu Picasa</h1></div>
+
+<div id="wrapper">
+	<div id="scroller">
+		<ul id="thelist"></ul>
+	</div>
+</div>
+
+
+<div id="menu" style="width:100%; display:none; position:fixed; left:0; bottom:0; background:#fff; padding:2px; opacity:1; z-index:10;"> 
+	<button onClick="backToAlbumsList();" class="btn btn-inverse" id='albumy_menu' >Albumy</button>
+	<button onClick="dodajUser();" class="btn btn-inverse">Dodaj</button>
+	<button onClick="koniec();" class="btn btn-warning">Koniec</button>
+
+	
+</div>
+
+<div id="overlay"></div>
+<div id="photo">
+<div id="ramka" class="aniwhite"><img src="icon.png" /></div>
+</div>
+
+
+<div id="container">
+  <div class="box size31">1  &nbsp; alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa alfa</div>
+  <div class="box size21">2 &nbsp; alfa</div>
+  <div class="box size32">3 &nbsp; alfa</div>
+  <div class="box size11">4 &nbsp; alfa</div>
+  <div class="box size21">5 &nbsp; alfa</div>
+  <div class="box size12">6 &nbsp; alfa</div>
+  <div class="box size21">2 &nbsp; alfa</div>
+  <div class="box size32">3 &nbsp; alfa</div>
+  <div class="box size11">4 &nbsp; alfa</div>
+  <div class="box size21">5 &nbsp; alfa</div>
+  <div class="box size12">6 &nbsp; alfa</div>
+</div>
+<a class="btn" id="append">Append</a>
+<a class="btn" id="prepend">Prepend</a>
+
+<script type="text/javascript" >
+  $(function() { 
+    $('#container').nested();  
+  });
+</script>
+
+
+
+<div id="modal">
+<div id="modal_body"></div>
+</div>
+<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
+<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
+
+<div id="test" style="display:none; position:fixed; top:60px; right:3px; z-index:99; padding:3px; "></div>
+
+
+
+
+
+</body>
+</html>

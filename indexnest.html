@@ -5,17 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>Picasa iScroll</title>
+<title>Picasa Nested layout</title>
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAANMUUAlYqEAPz//QAEH2kAwWAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERDAzMzRDNDREMAAzMzMDAEQwAiIiIgAARDARERERESREMxAREREQI0QyEAERAAAkREMQAAEAASREQxEAAAARJERDERAAAREkRDMRERABESNEMxERIRERA0QwAiIiIiAARDAAMzMzMwBEMzM0QzRDA0REREREREREQAAAAAXzQAAEfoAABAAAAAQAAAAGACAABAAAAAIAAAACAAAAAgAAAAYAIAAGACAABAAAAAR/gAAHzKAAAAAAAA" />
 <link rel="stylesheet" href="bootstrap.mi.css">
-<link href="picasa.css" rel="stylesheet">
+
 <style type="text/css" media="all">
+body {background:#000;}
+header {position:fixed; top:0; left:0; z-index:99;}
+#ramka {display:none;}
+.box {list-style:none;overflow: hidden;}
+.box {float:left}
+
+.size11 {width:200px; height:200px;}
+.size21 {width:400px; height:200px;}
+.size12 {width:200px; height:400px;}
+.size22 {width:400px; height:200px;}
+
+.size11 img {zoom:0.5;}
+.size21 img {margin-left:0px; margin-top:-30px;}
+.size12 img {margin-left:-100px; margin-top:0px;}
 
 </style>
 
 <script type="text/javascript" src="cordova-2.2.0.js"></script>
-<script type="text/javascript" src="iscroll.js"></script>
 
+<!--
+<link href="picasa.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="Nested/js/jquery-1.7.1.min.js"><\/script>')</script>
+-->
+<script src="Nested/js/jquery.min.js"></script>
+<script src="Nested/jquery.nested.js"></script>
 
 <script>
 //document.addEventListener('DOMContentLoaded', loaded, false);
@@ -27,10 +47,11 @@ var	imgmax = '800';
 var obrazy=[];
 
 	var user = window.localStorage.getItem('_picasa_user') || 'szczecinmojemiasto';
-	var icon_albums	= '120c';
-	var icon_photos	= '120c';
+	var icon_albums	= '400c';
+	var icon_photos	= '400c';
 
 
+	/*
 var $=function (id) {
 	var prefix=id[0];
 	var iid=id.slice(1,id.length);
@@ -40,7 +61,7 @@ var $=function (id) {
 		default:	return document.getElementsByTagName(id); 
 		}	
 	}
-	
+*/	
 function wymiary(){
 	var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],x=w.innerWidth||e.clientWidth||g.clientWidth,y=w.innerHeight||e.clientHeight||g.clientHeight;
 	var _x=Math.round(y*(16/9));
@@ -61,10 +82,12 @@ function onload(){
 			}
 		catch(err) {onDeviceReady();}
 		
+		/*
 		window.onresize=function(){
 			var url_ALBUM=window.localStorage.getItem('_picasa_url');
 			pokazAlbum(url_ALBUM);
 		};
+		*/
 
 
 }
@@ -81,14 +104,16 @@ function onload(){
 		document.addEventListener("backbutton", onBackKeyDown, false);
 		document.addEventListener("menubutton", onMenuKeyDown, false);	
 		
+				/*
 				var x=wymiary().x;
 				if (___self) x=x*2;	// *2 bo skalowanie smartfonow
 				x=x*1.5;
 				x=Math.round(x/120)*120;
-				$('#scroller').style.width=x+'px';
-		
+				$('#scroller').css('width',x);
+				*/
+				
 		$('#title').innerText=user;
-		var menu=$('#menu');
+		var menu=document.getElementById('menu');
 		
 		
 	var ul=$('#thelist');
@@ -163,8 +188,8 @@ function onload(){
 	
 	function onMenuKeyDown() {
 		window.localStorage.removeItem('_picasa_url');
-		if (menuOpen) {$("#menu").style.display="none";menuOpen=false;}
-		else          {$("#menu").style.display="block";menuOpen=true;}	
+		if (menuOpen) {$("#menu").css('display','none'); menuOpen=false;}
+		else          {$("#menu").css('display','block'); menuOpen=true;}	
     }	
 	
 	
@@ -181,7 +206,7 @@ picasa = {
 		}
 	//console.log(urlPICASA);
 					
-		if ($('#pokazPicasa')) document.getElementsByTagName('head')[0].removeChild($('#pokazPicasa'));
+		//if ($('#pokazPicasa')) document.getElementsByTagName('head')[0].removeChild($('#pokazPicasa'));
 		var script=document.createElement('SCRIPT');
 		script.type='text/javascript';
 		script.id='pokazPicasa';
@@ -192,55 +217,30 @@ picasa = {
 	}	
 }	
 	
-var myScroll;
 
-function loaded() {
-	if (myScroll) {myScroll.refresh(); return; }
-	
-	myScroll = new iScroll('wrapper', {
-		snap: 'li',
-		momentum: false,
-		hScrollbar: false,
-		vScrollbar: false
-	 });
-}
-	
-
-	
 
 
 function viewAlbumsList(req){
-if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takiego foto albumu</h1>'; return;}
+	//console.log(req);
+	if (req.error && req.error.code=='404') {$('#albumy').innerHTML='<h1>Brak takiego foto albumu</h1>'; return;}
 
-		$('#wrapper').style.display='none';
- var ul=$('#thelist');
- var al=$('#albumy');
- al.innerHTML='';
- var ile=req.data.items.length;
-		for (var i=0;i<ile;i++){
-			var	html='';	
-			var	htma='';	
+	$('#wrapper').css('display','none');
+	var al=document.getElementById('albumy');
+	//al.innerHTML='';
+	var ile=req.data.items.length;
+		for (var i=0;i<ile;i++){		
 			var self_link=req.data.items[i].selfLink;			
 			var alt_link=req.data.items[i].alternateLink;
 			var arr=self_link.split('/');
 			var arr=arr[arr.length-1].split('?');
 			var albumID=arr[0];			
 			var onklik='pokazAlbum(\''+self_link+'\');';
-			//html+='<a href=./?picasa='+picasa+'&album='+albumID+'>';
-					//html+='<div onClick="'+onklik+'" class="ikony_galeria">';
-					//html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
-					//html+='</div>';
-
-					htma+='<button onClick="'+onklik+'" class="btn btn-inverse btn-large klik  anired">';
-					htma+=req.data.items[i].title;
-					htma+='</button>';
-			//html+='</a>';
-		al.innerHTML+=htma;
-		//var li=document.createElement("LI");
-		//li.innerHTML=html;
-		//ul.appendChild(li);
+				var bat = document.createElement("BUTTON");
+				bat.className='btn btn-inverse';
+				bat.innerText=(req.data.items[i].title);
+				bat.setAttribute('onClick',onklik);
+				al.appendChild(bat);
 		}
-		loaded();
 }	
 
 
@@ -252,8 +252,11 @@ function pokazAlbum(url_ALBUM){
 	//$('#test').innerHTML=imgmax;
 	url_ALBUM=url_ALBUM.replace('entry','feed');
 	//console.log(url_ALBUM);
-
-	if ($('#pokazAlbum')) document.getElementsByTagName('head')[0].removeChild($('#pokazAlbum'));
+	
+	var ppp=document.getElementById('pokazAlbum');
+	if (ppp) 
+	document.getElementsByTagName('head')[0].removeChild(ppp);
+	
 	var scriptA=document.createElement('SCRIPT');
 	scriptA.type='text/javascript';
 	scriptA.id='pokazAlbum';
@@ -269,28 +272,61 @@ function viewPhotosList(req){
 	var wymiar=wymiary();
 	var zoom=Math.min((wymiar.x/ile/15),1);
 	$('#title').innerText=title;
-	$('#title').style.zoom=zoom;
+	$('#title').css('zoom',zoom);
 obrazy.length=0;
-	var ul=$('#thelist');
+	var ul=document.getElementById('thelist');
+	ul.innerHTML='';
 	var ile=req.data.items.length;
 	ostatni=ile-1;
-	$('#albumy').style.display='none';
-	$('#wrapper').style.display='block';
+	$('#albumy').css('display','none');
+	$('#wrapper').css('display','block');
+	
 	for (var i=0;i<ile;i++){
 	var id='im'+i;
 		var onklik='pokazSlide(\''+req.data.items[i].media.image.url+'\',\''+req.data.items[i].media.image.width+'\',\''+req.data.items[i].media.image.height+'\',\''+req.data.items[i].title+'\',\''+id+'\',\''+i+'\');';					
 		html='';
 			html+='<div id="'+id+'" onClick="'+onklik+'" class="ikony_album aniblue">';
-			html+='<img src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
+			html+='<img onLoad="loading('+i+','+ostatni+')" src="'+req.data.items[i].media.thumbnails[0]+'" title="'+req.data.items[i].title+'" alt="'+req.data.items[i].title+'"/>';
 			html+='</div>';
-				var li=document.createElement("LI");
+				var li=document.createElement("DIV");
+				var xx=Math.ceil(Math.random()*2);
+				var yy=Math.ceil(Math.random()*2);
+				li.className='box size'+xx+yy;
 				li.innerHTML=html;
+				//li.setAttribute();
 				ul.appendChild(li);
 				obrazy.push(req.data.items[i].media.image.url);
 		}		
-	loaded();
+	//loaded();
 	//console.log(obrazy.length);
 	//console.log(obrazy);
+}
+
+
+function loading(i,ile){
+	//console.log(i+' '+ile);
+	if (i==ile) loaded();
+}
+
+
+var myScroll;
+
+function loaded() {
+
+ $(function() { 
+    $('#thelist').nested();  
+  });
+return true;
+ 	/*
+	if (myScroll) {myScroll.refresh(); return; }
+	
+	myScroll = new iScroll('wrapper', {
+		snap: 'li',
+		momentum: false,
+		hScrollbar: false,
+		vScrollbar: false
+	 });
+	 */
 }
 
 
@@ -365,14 +401,14 @@ function usun(ten,id){
 	var ramka = document.getElementById('ramka');
 	var slajd = document.getElementById('slajd');
 	ramka.removeChild(slajd);
-	$('#photo').style.display='none';
-	$('#ramka').style.display='none';
-	$('#overlay').style.display='none';
+	$('#photo').css('display','none');
+	$('#ramka').css('display','none');
+	$('#overlay').css('display','none');
 }
 
 function backToAlbumsList(){
-	$('#wrapper').style.display='none';
-	$('#albumy').style.display='block';
+	$('#wrapper').css('display','none');
+	$('#albumy').css('display','block');
 	$('#thelist').innerHTML='';
 }
 
@@ -417,13 +453,16 @@ function koniec(){
 
 </head>
 <body onLoad="onload()">
-<div id="header"><a href="javascript:void(0)" onClick="backToAlbumsList()" ><span id="title">Picasa iScroll</span></a></div>
+<header>
+	<button onClick="backToAlbumsList()" class="btn btn-inverse" style=""> << </button>
+	<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="">Menu</button>
+</header>
 
 <div id="albumy"><h1 style="text-align:center; margin-top:4em;">Foto albumu Picasa</h1></div>
 
 <div id="wrapper">
 	<div id="scroller">
-		<ul id="thelist"></ul>
+		<div id="thelist"></div>
 	</div>
 </div>
 
@@ -442,14 +481,16 @@ function koniec(){
 </div>
 
 
+
 <div id="modal">
 <div id="modal_body"></div>
 </div>
-<button onClick="backToAlbumsList()" class="btn btn-inverse" style="position:absolute; left:2px;  top:5px; z-index:3;"> << </button>
-<a href="indexnest.html" style="margin-left:8em; position: relative; color:white; font-weight:bold;">NestedGrid</a>
-<button onClick="onMenuKeyDown()" class="btn btn-inverse"    style="position:absolute; right:2px; top:5px; z-index:3;">Menu</button>
 
 <div id="test" style="display:none; position:fixed; top:60px; right:3px; z-index:99; padding:3px; "></div>
+
+
+
+
 
 </body>
 </html>

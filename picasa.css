@@ -30,7 +30,7 @@ a,a:link,a:action{text-decoration:none; outline:none;}
 .over.middle {left:0; margin-left:33.333%; auto;  }
 .over.right  {right:0;       }
 
-.aniblue { -webkit-animation-name: bluePulse; -webkit-animation-duration: 2s;}
+.aniblue { -webkit-animation-name: bluePulse; -webkit-animation-duration: 7s;}
 .anired { -webkit-animation-name: redPulse; -webkit-animation-duration: 4s; }
 .aniwhite { -webkit-animation-name: whitePulse; -webkit-animation-duration: 5s; }
 
